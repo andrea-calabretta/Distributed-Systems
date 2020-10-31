@@ -1,0 +1,5 @@
+CREATE USER 'springant'@'localhost' IDENTIFIED BY 'DB2020!';
+CREATE DATABASE ecomm;
+GRANT ALL PRIVILEGES ON ecomm.* TO 'springant'@'localhost';
+FLUSH PRIVILEGES;
+
