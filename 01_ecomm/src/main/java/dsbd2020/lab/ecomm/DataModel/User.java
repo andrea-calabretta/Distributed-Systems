@@ -70,4 +70,15 @@ public class User {
         this.roles = roles;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", psw='" + psw + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }
