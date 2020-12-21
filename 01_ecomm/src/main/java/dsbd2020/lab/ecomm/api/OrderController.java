@@ -38,7 +38,7 @@ public class OrderController {
 
             //verifica che il productRepository contenga quel prodotto (in base a ID) in quantità >= richiesta
             Product product = productRepository.findByIdAndQuantityGreaterThanEqual(entry.getKey(), entry.getValue());
-            
+
                             list.add(new OrderProduct().setProduct(product).setQuantity(entry.getValue()));
                             // aggiorna la quantità di prodotto che rimane in stock dopo aver soddisfatto la richiesta
 

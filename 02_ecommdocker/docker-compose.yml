@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+      # mysql_native_password is the default authentication plugin
+      #used for an account when no authentication plugin is explicitly mentioned
+    #ports:
+    #  - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ecomm
+      MYSQL_USER: springant
+      MYSQL_PASSWORD: DSBD2020!
+      MYSQL_ROOT_PASSWORD: mysecretpw
+    volumes:
+      - mystorage:/var/lib/mysql
+
+  ecommdocker:
+    #image: ecommdocker
+    build:
+      context: . # path relativo da cui lancio il docker-compose verso il Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USERNAME: springant
+      MYSQL_PASSWORD: DSBD2020!
+
+  fallback:
+    image: debian
+    command: sleep 36000
+    #volumes:
+    #  - myothervolume:/mnt
+
+volumes:
+  mystorage:
+  #myothervolume:
