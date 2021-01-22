@@ -1,0 +1,87 @@
+version: '3.4'
+
+#========
+# Common variables
+#========
+x-common-variables: &common-variables
+  DATASOURCE_HOST: ${DB_HOST}
+  DATASOURCE_USER: ${DB_USER}
+  DATASOURCE_PASSWORD: ${DB_PASSWORD}
+  DATASOURCE_NAME: ${DB_DATABASE}
+  DATASOURCE_PORT: ${DB_PORT}
+  REGISTRATION_SERVER: ${REGISTRATION_SERVER_HOST}
+  REGISTRATION_SERVER_PORT: ${REGISTRATION_SERVER_PORT}
+
+services:
+  mysqldb:
+    image: mysql
+
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - mystorage:/var/lib/mysql
+
+  registrationserver:
+    build:
+      context: .
+      dockerfile: registrationserver/Dockerfile
+    ports:
+      - "1111:1111"
+    restart: always
+
+  springgateway:
+    build:
+      context: .
+      dockerfile: springgateway/Dockerfile
+    ports:
+      - "9999:9999"
+    depends_on:
+      - registrationserver
+    restart: always
+    environment:
+      REGISTRATION_SERVER: ${REGISTRATION_SERVER_HOST}
+
+  usermanager:
+    build:
+      context: . #ecommmicroservices
+      dockerfile: usermanager/Dockerfile
+    depends_on:
+      - mysqldb
+      - registrationserver
+    ports:
+      - "2222:2222"
+    restart: always
+    environment:
+      <<: *common-variables
+
+  productmanager:
+    build:
+      context: . #ecommmicroservices
+      dockerfile: productmanager/Dockerfile
+    ports:
+      - "3333:3333"
+    depends_on:
+      - mysqldb
+      - registrationserver
+    restart: always
+    environment:
+      <<: *common-variables
+
+  ordermanager:
+    build:
+      context: . #Root del progetto (ecommmicroservices)
+      dockerfile: ordermanager/Dockerfile
+    ports:
+      - "4444:4444"
+    depends_on:
+      - mysqldb
+      - registrationserver
+    restart: always
+    environment:
+      <<: *common-variables
+
+volumes:
+  mystorage:
